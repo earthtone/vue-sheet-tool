@@ -1,6 +1,7 @@
 # Vue Sheet Assistant 
 
-![vue logo]('./src/assets/logo.png')
+![vue logo](./src/assets/logo.png)
+
 Vue App for interfacing with a given Google Sheet.
 
 ## Project setup
