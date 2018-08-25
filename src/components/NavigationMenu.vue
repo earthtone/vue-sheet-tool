@@ -1,25 +1,28 @@
 <template>
-  <nav>
-    <img alt="Vue logo" src="@/assets/logo.png">
+  <nav class="navigation-menu">
+    <!-- <img alt="Vue logo" src="@/assets/logo.png"> -->
     <SetterInput />
     <SheetList />
+    <HeaderList />
   </nav>
 </template>
 
 <script>
-import SetterInput from './SetterInput.vue'
-import SheetList from './SheetList'
+import SetterInput from '@/components/SetterInput.vue'
+import SheetList from '@/components/SheetList'
+import HeaderList from '@/components/HeaderList'
 
 export default {
   name: 'navigation-menu', 
   components: {
     SetterInput,
-    SheetList
+    SheetList,
+    HeaderList
   }
 }
 </script>
 
-<style scope>
+<style>
 nav {
   min-height: 100vh;
   background-color: #333;

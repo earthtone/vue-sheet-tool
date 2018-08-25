@@ -1,20 +1,36 @@
 <template>
-  <ul>
-    <li v-for="(sheet, index) in getSheetNames" :key="index">
-      <a @click="(e) => setSheet(sheet)">{{ sheet.name }}</a>
-    </li>
-  </ul>
+  <select v-model="worksheets">
+    <option value="" >Select Worksheet</option>
+    <option 
+      v-for="sheet in worksheets" 
+      :key="sheet.id" 
+      :value="sheet.id"
+      :selected="sheet.id == currentId"
+      >
+      {{sheet.name}}
+    </option>
+  </select>
 </template>
+
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'sheet-list',
   computed: {
-    ...mapGetters(['getSheetNames']) 
-  },
-  methods: {
-    ...mapMutations(['setSheet'])
+    ...mapGetters(['getSheetNames', 'getCurrentSheet']),
+    worksheets: {
+      get () {
+        return this.getSheetNames 
+      },
+      set (value) {
+        if (!value) return
+        this.$store.dispatch('setSheet', value)
+      }
+    },
+    currentId () {
+      return this.$store.currentSheetId 
+    }
   }
 }
 </script>

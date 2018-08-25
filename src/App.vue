@@ -1,23 +1,41 @@
 <template>
-  <div id="app">
-    <NavigationMenu />
-    <main v-if="currentSheet">
-    <h1>{{ currentSheet }}</h1> 
+  <div id="app" :class="{'show-nav': getNavState}">
+    <transition>
+      <NavigationMenu v-show="getNavState" />
+    </transition>
+    <main class="app-container">
+      <app-loader v-if="getLoadingState" />
+      <app-alert :message="'No rows found'" />
+      <app-menu-button class="menu-btn" :handler="toggleMenu"/>
+      <FilterableTable :current="getCurrentSheet"/>
     </main>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import NavigationMenu from './components/NavigationMenu.vue'
+import { mapGetters } from 'vuex'
+import FilterableTable from '@/components/FilterableTable.vue'
+import NavigationMenu from '@/components/NavigationMenu.vue'
+import AppAlert from '@/components/w3-alert.vue'
+import AppMenuButton from '@/components/w3-animated-menu-button.vue'
+import AppLoader from '@/components/w3-loader.vue'
 
 export default {
   name: 'app',
   components: {
-     NavigationMenu 
+    FilterableTable,
+    NavigationMenu ,
+    AppAlert,
+    AppMenuButton,
+    AppLoader
   },
   computed: {
-    ...mapState(['currentSheet']),
+    ...mapGetters(['getCurrentSheet', 'getAlertState', 'getNavState', 'getLoadingState']),
+  },
+  methods: {
+    toggleMenu () {
+      this.$store.dispatch('toggleMenu') 
+    } 
   }
 }
 </script>
@@ -51,6 +69,20 @@ body {
   color: #2c3e50;
 
   display: grid;
+}
+
+#app.show-nav {
   grid-template-columns: 250px 1fr;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.menu-btn {
+  margin: 1rem;
 }
 </style>

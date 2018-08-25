@@ -1,6 +1,6 @@
 <template>
-  <form @submit="handleSubmit">
-    <input type="text" placeholder="Input Sheet Key" />
+  <form @submit="handleSubmit" class="nav-form">
+    <input type="text" placeholder="Input Workbook Key" />
   </form>
 </template>
 
@@ -14,21 +14,31 @@ export default {
   },
   methods: {
     handleSubmit (e) {
-      // DBZ FIGHTS: 1s7SS4Mi7x6MgQLUuFQ4NWH-PpUK4fmEteb9mEQjBnjk
-
       e.preventDefault()
-      var inputValue = e.target.querySelector('input').value || '1s7SS4Mi7x6MgQLUuFQ4NWH-PpUK4fmEteb9mEQjBnjk'
-      this.$store.commit('setKey', { key: inputValue })
+      var key = e.target.querySelector('input').value
+      this.setKey(key)
+    },
+    setKey (key = '') {
+      key = key || process.env.VUE_APP_UTS_KEY
+      this.$store.commit('setKey', { key })
     }
+  },
+  created () {
+    this.setKey() 
   }
 }
 </script>
 
-<style scope>
-input {
+<style>
+.nav-form > input {
   background-color: #333;
   color: #fff;
   border: none;
   border-bottom: 1px solid #fff !important;
+}
+
+.nav-form input:focus {
+  outline: 0;
+  transform: scale(1.1);
 }
 </style>
