@@ -4,8 +4,8 @@
 
 Vue App for interfacing with a given Google Sheet.
 
-[sheetsy](https://github.com/TehShrike/sheetsy)
-[Vue](https://vuejs.org/)
+- [sheetsy](https://github.com/TehShrike/sheetsy)
+- [Vue](https://vuejs.org/)
 
 ## Project setup
 ```
