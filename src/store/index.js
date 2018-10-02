@@ -131,6 +131,7 @@ const actions = {
       let wb = await getWorkbook(state.wbKey)
       commit('setWorkbook', { workbook: wb })
     } catch (err) {
+      console.error(err)
       return err
     }
   },
