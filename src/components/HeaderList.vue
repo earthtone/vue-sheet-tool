@@ -5,7 +5,8 @@
       v-for="header in getAllHeaders" 
       :key="header.index"
       :checked="header.selected"
-      :changeHandler="() => bugger(header.index)">
+      :changeHandler="() => bugger(header.index)"
+      :disabled="header.name === 'identifier'">
     {{header.name}}
      </app-toggle>
   </div>

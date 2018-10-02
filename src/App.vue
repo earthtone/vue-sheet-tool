@@ -1,10 +1,12 @@
 <template>
   <div id="app" :class="{'show-nav': getNavState}">
-    <transition>
+    <transition name="slide">
       <NavigationMenu v-show="getNavState" />
     </transition>
     <main class="app-container">
-      <app-loader v-if="getLoadingState" />
+      <app-loader v-if="getLoadingState">
+        <h5 class="loading-text">{{ getLoadingText }}</h5>
+      </app-loader>
       <app-alert :message="'No rows found'" />
       <app-menu-button class="menu-btn" :handler="toggleMenu"/>
       <FilterableTable :current="getCurrentSheet"/>
@@ -30,7 +32,13 @@ export default {
     AppLoader
   },
   computed: {
-    ...mapGetters(['getCurrentSheet', 'getAlertState', 'getNavState', 'getLoadingState']),
+    ...mapGetters([
+      'getCurrentSheet', 
+      'getAlertState', 
+      'getNavState', 
+      'getLoadingState',
+      'getLoadingText'
+    ]),
   },
   methods: {
     toggleMenu () {
@@ -75,14 +83,24 @@ body {
   grid-template-columns: 250px 1fr;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.slide-enter-active, .slide-leave-active {
+  transition: transform .5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+.slide-enter{
+  transform: translateX(-250px);
+}
+
+.slide-leave-to {
+  transform: translateX(-1500px);
 }
 
 .menu-btn {
   margin: 1rem;
+}
+
+.loading-text {
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  color: #000;
 }
 </style>

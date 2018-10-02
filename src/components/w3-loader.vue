@@ -1,6 +1,7 @@
 <template>
   <div class="w3-loader">
     <div class="loader"></div>
+    <slot></slot>
   </div>
 </template>
 
@@ -22,23 +23,24 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(255, 255, 255, .25);
-  display: grid;
+  background: rgba(255, 255, 255, .8);
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .loader {
-    border: 16px solid var(--bg);
-    border-top: 16px solid var(--primary);
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
+  border: 16px solid var(--bg);
+  border-top: 16px solid var(--primary);
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

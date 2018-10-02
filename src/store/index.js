@@ -8,41 +8,14 @@ const state = {
   showAlert: false,
   showNav: false,
   isLoading: true,
+  loadingText: '',
   searchTerm: '',
   wbKey: '',
   workbook: {
     sheets: [] 
   },
   currentSheetId: '',
-  headers: [
-    { name: 'Identifier', selected: true },
-    { name: 'Term', selected: false },
-    { name: 'Definition', selected: true },
-    { name: 'Source', selected: false },
-    { name: 'Duplicate?', selected: false },
-    { name: 'Synonyms', selected: false },
-    { name: 'Hypernym', selected: false },
-    { name: 'Notes', selected: false },
-    { name: 'UTS Strategic Objective', selected: false },
-    { name: 'UTS Domain', selected: false },
-    { name: 'UTS Intent', selected: false },
-    { name: 'Business?', selected: false },
-    { name: 'Access', selected: false },
-    { name: 'Use', selected: false },
-    { name: 'Own', selected: false },
-    { name: 'Systems', selected: false },
-    { name: 'Parent', selected: true },
-    { name: 'Data Element Type', selected: false },
-    { name: 'Value', selected: false },
-    { name: 'Status', selected: false },
-    { name: 'Date Created', selected: false },
-    { name: 'Date Changed', selected: false },
-    { name: 'Approver', selected: false },
-    { name: 'Approval Date', selected: false },
-    { name: 'Release Date', selected: false },
-    { name: 'Version Number', selected: false },
-    { name: 'Change Records Number', selected: false }
-  ]
+  headers: []
 }
 
 const getters = {
@@ -75,6 +48,9 @@ const getters = {
   },
   getLoadingState (state) {
     return state.isLoading 
+  },
+  getLoadingText (state) {
+    return state.loadingText 
   }
 }
 
@@ -87,7 +63,7 @@ const mutations = {
   // Step 3
   setWorkbook (state, payload) {
     state.workbook = payload.workbook
-    state.workbook.sheets.splice(0, 6)
+    state.workbook.sheets.splice(0, 4)
 
     let defaultSheetId = state.workbook.sheets.find(sh => sh.name === 'D7 Staff').id
     this.dispatch('setSheet', defaultSheetId)
@@ -108,6 +84,7 @@ const mutations = {
   setCurrentSheet (state, payload) {
     state.currentSheetId = payload
     this.commit('setLoading', false)
+    this.commit('setLoadingText')
   },
   showAlert (state) {
     state.showAlert = true
@@ -131,6 +108,16 @@ const mutations = {
     } else {
       state.isLoading = !state.isLoading 
     }
+  },
+  setLoadingText (state, payload) {
+    if (payload) {
+      state.loadingText = payload  
+    } else {
+      state.loadingText = '' 
+    }
+  },
+  initHeaders (state, payload) {
+    state.headers = payload 
   }
 }
 
@@ -138,6 +125,7 @@ const actions = {
   // Step 2
   async requestWorkbook ({ commit }) {
     commit('setLoading', true)
+    commit('setLoadingText', 'Requesting Workbook')
 
     try {
       let wb = await getWorkbook(state.wbKey)
@@ -147,15 +135,33 @@ const actions = {
     }
   },
   // Step 4
-  setSheet({ dispatch }, payload) {
+  setSheet({ commit, dispatch }, payload) {
+    commit('setLoadingText', 'Requesting Worksheet')
     dispatch('requestWorksheetRows', payload)
   },
   // Step 5 
-  async requestWorksheetRows ({ commit }, payload) {
+  async requestWorksheetRows ({ commit, state }, payload) {
     commit('setLoading', true)
 
     try {
       let sheet = await getSheet(state.wbKey, payload)
+      if (!state.headers.length) {
+
+        let hln = Object.keys(sheet.rows[0]).length / 2
+        let headers = Object.keys(sheet.rows[0]).slice(hln).map(h => {
+          switch (h) {
+            case 'identifier':
+            case 'definition':
+            case 'parent':
+              return { name: h, selected: true }
+            default:
+              return { name: h, selected: false }
+          }
+        })
+
+        commit('initHeaders', headers) 
+      }
+
       commit('setRows', { ...sheet, id: payload })
     } catch (err) {
       commit('showAlert')
