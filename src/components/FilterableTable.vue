@@ -57,7 +57,6 @@ export default {
     isIncluded (row) {
       // @TODO - WIP 
       var result = row.map(v => v.toLowerCase()).includes(this.searchText.toLowerCase())
-      debugger
       return result
     }
   }
