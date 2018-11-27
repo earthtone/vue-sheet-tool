@@ -4,7 +4,7 @@
       <header>
         <h1>{{ current.name }}</h1>
       </header>
-      <input type="text" placeholder="Enter Search Text..." v-model="searchText" />
+      <input type="text" placeholder="Search by Identifier..." v-model="searchText" />
       <table class="data-table">
         <tr>
           <th v-for="header in getSheetHeaders" :key="header.index">{{header.name}}</th>
@@ -35,26 +35,29 @@ export default {
     ...mapGetters(['getSheetHeaders', 'getSearchTerm']),
     filteredData () {
       if(!this.searchText){
-        return this.current.rows
+        return this.current.rows.filter(r => this.isValid(r))
       } else {
         return this.current.rows.filter(r => {
-          return this.isIncludedIdentifier(r) && this.isValid(r)
+          // return this.isIncludedIdentifier(r) && this.isValid(r)
+          return this.isIncluded(r) && this.isValid(r)
         })
       }
     }
   },
   methods: {
     isValid (row) {
-      let validityIndex = this.$store.state.headers.find(h => h.name === 'Business?').index
-      return !(/N/i.test(row[validityIndex]))
+      return !(/N/i.test(row[11]))
     },
     isIncludedIdentifier (row) {
-      let identifierIndex = this.getSheetHeaders.find(h => h.name === 'Identifier').index
-      return row[identifierIndex].toLowerCase().includes(this.searchText.toLowerCase())
+      return row[0].toLowerCase().includes(this.searchText.toLowerCase())
     },
     isIncludedDefinition (row) {
-      let definitionIndex = this.getSheetHeaders.find(h => h.name === 'Definition').index
-      return row[definitionIndex].toLowerCase().includes(this.searchText.toLowerCase())
+      return row[2].toLowerCase().includes(this.searchText.toLowerCase())
+    },
+    isIncluded (row) {
+      // @TODO - WIP 
+      var result = row.map(v => v.toLowerCase()).includes(this.searchText.toLowerCase())
+      return result
     }
   }
 }
@@ -62,7 +65,9 @@ export default {
 
 <style scoped>
 .data-table {
-  border-collapse: collapse; 
+  width: 100%;
+  overflow-x: scroll;
+  border-collapse: collapse;
 }
 .data-table th, .data-table td {
   padding: 1em;
@@ -72,11 +77,13 @@ export default {
 
 .data-table th {
   font-weight: bold; 
-  /* min-width: 284px; */
+  text-transform: uppercase;
 }
 
 .data-table tr {
-  max-width: 33.33%; 
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
 }
 
 .data-table tr:nth-child(even) {
