@@ -65,7 +65,7 @@ const mutations = {
     state.workbook = payload.workbook
     state.workbook.sheets.splice(0, 4)
 
-    let defaultSheetId = state.workbook.sheets.find(sh => sh.name === 'D7 Staff').id
+    let defaultSheetId = state.workbook.sheet[0]
     this.dispatch('setSheet', defaultSheetId)
   },
   // Step 6
