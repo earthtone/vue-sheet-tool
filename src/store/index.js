@@ -12,7 +12,7 @@ const state = {
   searchTerm: '',
   wbKey: '',
   workbook: {
-    sheets: [] 
+    sheets: []
   },
   currentSheetId: '',
   headers: []
@@ -20,13 +20,13 @@ const state = {
 
 const getters = {
   getKey (state) {
-    return state.wbKey 
+    return state.wbKey
   },
   getSheetNames (state) {
     return state.workbook.sheets.map(sh => ({ name: sh.name, id: sh.id }))
   },
   getAllHeaders (state) {
-    return state.headers.map((h, i) => Object.assign(h, {index: i }))
+    return state.headers.map((h, i) => Object.assign(h, { index: i }))
   },
   getSheetHeaders (state) {
     return state.headers
@@ -38,26 +38,26 @@ const getters = {
     return current
   },
   getSearchTerm (state) {
-    return state.searchTerm 
-  }, 
+    return state.searchTerm
+  },
   getAlertState (state) {
-    return state.showAlert 
+    return state.showAlert
   },
   getNavState (state) {
-    return state.showNav 
+    return state.showNav
   },
   getLoadingState (state) {
-    return state.isLoading 
+    return state.isLoading
   },
   getLoadingText (state) {
-    return state.loadingText 
+    return state.loadingText
   }
 }
 
 const mutations = {
   // Step 1
   setKey (state, payload) {
-    state.wbKey = payload.key 
+    state.wbKey = payload.key
     this.dispatch('requestWorkbook')
   },
   // Step 3
@@ -91,33 +91,33 @@ const mutations = {
     this.dispatch('hideAlert')
   },
   hideAlert (state) {
-    state.showAlert = false 
+    state.showAlert = false
   },
   setHeaders (state, payload) {
     state.headers[payload].selected = !state.headers[payload].selected
   },
   setMenu (state) {
-    state.showNav = !state.showNav 
+    state.showNav = !state.showNav
   },
   setSearchTerm (state, payload) {
-    state.searchTerm = payload 
+    state.searchTerm = payload
   },
   setLoading (state, payload) {
     if (payload) {
-      state.isLoading = Boolean(payload) 
+      state.isLoading = Boolean(payload)
     } else {
-      state.isLoading = !state.isLoading 
+      state.isLoading = !state.isLoading
     }
   },
   setLoadingText (state, payload) {
     if (payload) {
-      state.loadingText = payload  
+      state.loadingText = payload
     } else {
-      state.loadingText = '' 
+      state.loadingText = ''
     }
   },
   initHeaders (state, payload) {
-    state.headers = payload 
+    state.headers = payload
   }
 }
 
@@ -136,18 +136,17 @@ const actions = {
     }
   },
   // Step 4
-  setSheet({ commit, dispatch }, payload) {
+  setSheet ({ commit, dispatch }, payload) {
     commit('setLoadingText', 'Requesting Worksheet')
     dispatch('requestWorksheetRows', payload)
   },
-  // Step 5 
+  // Step 5
   async requestWorksheetRows ({ commit, state }, payload) {
     commit('setLoading', true)
 
     try {
       let sheet = await getSheet(state.wbKey, payload)
       if (!state.headers.length) {
-
         let hln = Object.keys(sheet.rows[0]).length / 2
         let headers = Object.keys(sheet.rows[0]).slice(hln).map(h => {
           switch (h) {
@@ -160,7 +159,7 @@ const actions = {
           }
         })
 
-        commit('initHeaders', headers) 
+        commit('initHeaders', headers)
       }
 
       commit('setRows', { ...sheet, id: payload })
@@ -173,17 +172,17 @@ const actions = {
     commit('setLoading', false)
 
     setTimeout(() => {
-      commit('hideAlert') 
+      commit('hideAlert')
     }, 1000)
   },
   updateHeaders ({ commit }, payload) {
-    commit('setHeaders', payload) 
+    commit('setHeaders', payload)
   },
   toggleMenu ({ commit }) {
-    commit('setMenu') 
+    commit('setMenu')
   },
   updateSearchTerm ({ commit }, payload) {
-    commit('setSearchTerm', payload) 
+    commit('setSearchTerm', payload)
   }
 }
 

@@ -1,6 +1,5 @@
 <template>
   <nav class="navigation-menu">
-    <!-- <img alt="Vue logo" src="@/assets/logo.png"> -->
     <SetterInput />
     <SheetList />
     <HeaderList />
